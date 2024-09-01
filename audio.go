@@ -539,15 +539,14 @@ func connectToWebSocketSignallingServer(webrtcwsurl, token string, cookies []*ht
 }
 
 
+
 type joinMessage struct {
 	ID                string `json:"id"`
 	Type              string `json:"type"`
 	Role              string `json:"role"`
-	InternalMeetingID string `json:"internalMeetingId"`
-	VoiceBridge       int `json:"voiceBridge"`
-	CaleeName         string `json:"caleeName"`
-	UserID            string `json:"userId"`
-	UserName          string `json:"userName"`
+	ClientSessionNumber int `json:"clientSessionNumber"`
+	Extension interface{} `json:"extension"`
+	TransparentListenOnly bool `json:"transparentListenOnly"`
 }
 // Send join message
 func sendJoinMessage(wscon *websocket.Conn, internalMeetingID string, voiceBridge int, caleeName, userID, userName string) error {
@@ -556,13 +555,10 @@ func sendJoinMessage(wscon *websocket.Conn, internalMeetingID string, voiceBridg
 		ID:                "start",
 		Type:              "audio",
 		Role:              "recv",
-		InternalMeetingID: internalMeetingID,
-		VoiceBridge:       voiceBridge,
-		CaleeName:         caleeName,
-		UserID:            userID,
-		UserName:          userName,
+		ClientSessionNumber: 2,
+		Extension: nil,
+		TransparentListenOnly: false,
 	}
-
 	// Marshal join message and send it
 	err := wscon.WriteJSON(joinMsg)
 	if err != nil {
